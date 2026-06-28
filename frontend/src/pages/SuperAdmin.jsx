@@ -29,9 +29,8 @@ function SuperAdminLogin() {
   return (
     <div className="auth-page">
       <div className="auth-box">
-        <div className="portal-badge portal-badge--super">Super Admin</div>
-        <h1 className="auth-title">System Control</h1>
-        <p className="auth-sub">Restricted access — administrators only</p>
+        <div className="portal-badge portal-badge--super">Super Admin Portal</div>
+        <h1 className="auth-title">Super Admin Sign In</h1>
         {error && <Alert>{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <Input

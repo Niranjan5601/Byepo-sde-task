@@ -35,7 +35,6 @@ function UserLogin({ onSwitchToSignup }) {
       <div className="auth-box">
         <div className="portal-badge portal-badge--user">User Portal</div>
         <h1 className="auth-title">Sign In</h1>
-        <p className="auth-sub">Check which features are available for your organization</p>
         {error && <Alert>{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <Input
@@ -99,7 +98,6 @@ function UserSignup({ onSwitchToLogin }) {
       <div className="auth-box">
         <div className="portal-badge portal-badge--user">User Portal</div>
         <h1 className="auth-title">Create Account</h1>
-        <p className="auth-sub">Join your organization to check feature availability</p>
         {error && <Alert>{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <Input

@@ -5,8 +5,9 @@ const { authenticateToken, authorizeRole } = require('../middleware/auth');
 
 
 router.get("/", authenticateToken, authorizeRole(2), async (req, res) => {
+    const connection = await pool.getConnection();
+
     try {
-        const connection = await pool.getConnection();
         const [flags] = await connection.query("SELECT * FROM feature_flags WHERE organization_id = ?", [req.user.organization_id]);
         res.json(flags);
     }
@@ -45,8 +46,9 @@ router.post("/", authenticateToken, authorizeRole(2), async (req, res) => {
 });
 
 router.patch("/:id", authenticateToken, authorizeRole(2), async (req, res) => {
-    const { description, enabled, organization_id } = req.body;
+    const { description, enabled } = req.body;
     const { id } = req.params;
+    const organization_id = req.user.organization_id;
     const connection = await pool.getConnection();
     try {
         const [flags] = await connection.query(
@@ -56,16 +58,33 @@ router.patch("/:id", authenticateToken, authorizeRole(2), async (req, res) => {
         if (flags.length === 0) {
             return res.status(404).json({ error: "Feature flag not found" });
         }
-        if (description === undefined && enabled === undefined || enabled === null && description === null || typeof enabled !== 'boolean' && typeof description !== 'string') {
-            return res.status(400).json({ error: "At least one of description or enabled must be provided" });
+        if ((description === undefined && enabled === undefined) || (description !== undefined && typeof description !== 'string') || (enabled !== undefined && typeof enabled !== 'boolean')) {
+            return res.status(400).json({ error: "At least one of description or enabled must be provided, and types must be correct" });
         }
+
+        const updateFields = [];
+        const updateValues = [];
+
+        if (description !== undefined) {
+            updateFields.push("description = ?");
+            updateValues.push(description);
+        }
+        if (enabled !== undefined) {
+            updateFields.push("enabled = ?");
+            updateValues.push(enabled);
+        }
+
+        updateValues.push(id);
+        updateValues.push(organization_id);
+
         await connection.query(
-            "UPDATE feature_flags SET description = ?, enabled = ? WHERE id = ? AND organization_id = ?",
-            [description, enabled, id, organization_id]
+            `UPDATE feature_flags SET ${updateFields.join(", ")} WHERE id = ? AND organization_id = ?`,
+            updateValues
         );
         res.json({ message: "Feature flag updated successfully" });
     }
     catch (e) {
+        console.error("Update flag error:", e);
         res.status(500).json({ error: "An error occurred while updating the feature flag" });
     }
     finally {

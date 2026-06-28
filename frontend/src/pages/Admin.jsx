@@ -33,9 +33,8 @@ function AdminLogin({ onSwitchToSignup }) {
   return (
     <div className="auth-page">
       <div className="auth-box">
-        <div className="portal-badge portal-badge--admin">Admin Portal</div>
-        <h1 className="auth-title">Admin Sign In</h1>
-        <p className="auth-sub">Manage feature flags for your organization</p>
+        <div className="portal-badge portal-badge--admin">Organization Admin Portal</div>
+        <h1 className="auth-title">Organization Admin Sign In</h1>
         {error && <Alert>{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <Input
@@ -96,9 +95,8 @@ function AdminSignup({ onSwitchToLogin }) {
   return (
     <div className="auth-page">
       <div className="auth-box">
-        <div className="portal-badge portal-badge--admin">Admin Portal</div>
-        <h1 className="auth-title">Create Admin Account</h1>
-        <p className="auth-sub">You'll manage feature flags for your organization</p>
+        <div className="portal-badge portal-badge--admin">Organization Admin Portal</div>
+        <h1 className="auth-title">Create Organization Admin Account</h1>
         {error && <Alert>{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <Input
